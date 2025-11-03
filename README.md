@@ -18,6 +18,15 @@ A containerized OCR application using DeepSeek-OCR model with vLLM and a React f
 - **ROCm Support**: Optimized for AMD GPUs
 - **Responsive UI**: Clean, modern interface
 
+
+
+## Download Model Files
+# Make sure git-lfs is installed (https://git-lfs.com)
+git lfs install
+# Clone the DeepSeek-OCR model repository (approx 7 GB) 
+# Default path is set in .env as MODEL_HOST_PATH 
+git clone https://huggingface.co/DeepSeek/DeepSeek-OCR ./models
+
 ## API Endpoints
 
 ### OCR Processing
@@ -25,6 +34,7 @@ A containerized OCR application using DeepSeek-OCR model with vLLM and a React f
   - Form data with `file` (image) and `output_format` ("text" or "markdown")
 - `POST /api/ocr-base64` - Process base64 encoded image
 - `GET /api/health` - Health check endpoint
+
 
 ## Usage
 
