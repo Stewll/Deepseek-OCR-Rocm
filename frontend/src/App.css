@@ -1,0 +1,161 @@
+/* App.css - Styles for the DeepSeek OCR UI */
+
+/* Button base styles */
+.btn {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Button sizes */
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-medium {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+/* Button variants */
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-disabled {
+  background-color: #6c757d;
+  color: white;
+  cursor: not-allowed;
+}
+
+/* Main container */
+.app-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Form elements */
+.file-input {
+  display: block;
+  margin-top: 5px;
+  padding: 8px;
+}
+
+.select-input {
+  display: block;
+  margin-top: 5px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Image preview */
+.image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+}
+
+.overlay-image {
+  max-width: 100%;
+  max-height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+}
+
+/* Video/camera */
+.video-preview {
+  max-width: 100%;
+  max-height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+}
+
+.canvas-hidden {
+  display: none;
+}
+
+/* OCR result */
+.ocr-result {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+/* Utility classes */
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.margin-top-5 {
+  margin-top: 5px;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-small {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.text-tiny {
+  font-size: 12px;
+}
+
+.line-height-1-4 {
+  line-height: 1.4;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
