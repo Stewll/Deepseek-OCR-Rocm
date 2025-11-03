@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1
+# ROCm-enabled vLLM base
+FROM rocm/vllm-dev:nightly
+
+# Install the latest vLLM nightly build as recommended by DeepSeek-OCR docs
+# "Until v0.11.1 release, you need to install vLLM from nightly build"
+# RUN pip install --no-cache-dir -U vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
+
+# For ROCm/GPU access, we need to stay as root but secure the environment
+# Create a dedicated directory for the application
+RUN mkdir -p /app && chmod 755 /app
+WORKDIR /app
+
+# Copy requirements and install additional dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the FastAPI application
+# Copy the application source (app.py, config.py, and any local modules)
+COPY . .
+
+EXPOSE 9000
+
+# Start the FastAPI application
+CMD ["python", "app.py"]

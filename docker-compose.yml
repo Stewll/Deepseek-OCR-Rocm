@@ -1,0 +1,74 @@
+services:
+  vllm:
+    build:
+      context: ./Vllm
+      dockerfile: Dockerfile.vllm
+    container_name: vllm
+    environment:
+      # Inside container we expose MODEL_PATH pointing at the container model dir
+      # Default MODEL_CONTAINER_PATH to an absolute path inside the container if not set
+      - MODEL_PATH=${MODEL_CONTAINER_PATH:-/models/DeepSeek-OCR}
+      - HIP_VISIBLE_DEVICES=${HIP_VISIBLE_DEVICES}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}
+      - VLLM_WORKER_MULTIPROC_METHOD=${VLLM_WORKER_MULTIPROC_METHOD}
+      - PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH}
+    # No ports or expose needed - nginx communicates via internal Docker network
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
+    group_add:
+      - "video"
+    ipc: host
+    security_opt:
+      - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
+    cap_drop:
+      - ALL  # Drop all capabilities except those explicitly added
+    volumes:
+      # Map host model directory into container. Use MODEL_HOST_PATH for host path
+      # and MODEL_CONTAINER_PATH for where it will be mounted inside the container.
+      # Provide sensible defaults so `docker-compose` still works if .env is missing.
+      # Host path may be relative; container path must be absolute.
+      - ${MODEL_HOST_PATH:-./models}:${MODEL_CONTAINER_PATH:-/models/DeepSeek-OCR}:ro
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    expose:
+      - "${FRONTEND_PORT}"
+    environment:
+      - HOST=${FRONTEND_HOST}
+      - PORT=${FRONTEND_PORT}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+      - VITE_APP_VERSION=${VITE_APP_VERSION}
+      - VITE_ENABLE_WEBCAM=${VITE_ENABLE_WEBCAM}
+      - VITE_ENABLE_FILE_UPLOAD=${VITE_ENABLE_FILE_UPLOAD}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+    container_name: nginx
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    environment:
+      - NGINX_PORT=${NGINX_PORT}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:noexec,nosuid,size=50m
+      - /var/run:noexec,nosuid,size=10m
+      - /tmp:noexec,nosuid,size=10m

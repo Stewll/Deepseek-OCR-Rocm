@@ -1,0 +1,42 @@
+# syntax=docker/dockerfile:1
+
+FROM node:20-alpine AS base
+WORKDIR /app
+
+# Dependencies first (better caching)
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# App source
+COPY tsconfig.json vite.config.ts index.html ./ 
+COPY src ./src
+
+# Build to /app/dist
+RUN npm run build
+
+# Runtime: serve via Vite preview (simple) on 0.0.0.0:5173
+FROM node:20-alpine
+
+# Create unprivileged user for security (Alpine BusyBox syntax)
+RUN addgroup -g 1001 appuser && \
+    adduser -u 1001 -G appuser -D -s /bin/sh appuser
+
+WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy files as root first
+COPY --from=base /app/dist ./dist
+COPY --from=base /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+
+# Change ownership to appuser
+RUN chown -R appuser:appuser /app
+
+# Switch to unprivileged user
+USER appuser
+
+# vite is in node_modules/.bin
+EXPOSE 5173
+CMD ["node", "node_modules/vite/bin/vite.js", "preview", "--host", "0.0.0.0", "--port", "5173", "--strictPort"]
